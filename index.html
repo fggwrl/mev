@@ -97,7 +97,7 @@
             }
         }
 
-        // Funktion: SHA-256 Hash erstellen
+        // Funktion: SHA-l256 Hash erstellen
         async function sha256(message) {
             const msgBuffer = new TextEncoder().encode(message);
             const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
