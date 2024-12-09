@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Video</title>
+    <title>Passwortgeschützte Seite</title>
     <style>
         body {
             background-color: #add8e6; /* Babyblauer Hintergrund */
@@ -13,28 +13,98 @@
             margin: 0;
             padding: 0;
         }
-        h1 {
-            font-size: 3em;
+        .hidden-content {
+            display: none;
+        }
+        #login-container {
             margin-top: 20vh;
         }
-        p {
-            font-size: 1.5em;
-            margin: 20px;
+        input[type="password"] {
+            padding: 10px;
+            font-size: 1.2em;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
         iframe {
             margin-top: 20px;
             border: none;
         }
+        .button {
+            background-color: #007BFF; /* Blau */
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3; /* Dunkleres Blau */
+        }
     </style>
 </head>
 <body>
-    <h1>Ich hab auf dich gewartet</h1>
-    <p>Klick nicht auf das Video unten!</p>
-    <!-- Instagram Reel -->
-<iframe width="560" height="315" src="https://www.youtube.com/embed/1z0LYXR4Mfo?si=wiP3_-6ijBced1No" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    <!-- Button unter dem Video -->
-    <div class="button-container">
-        <a href="https://www.dein-link.com" target="_blank" class="button">Hier klicken</a>
+    <!-- Login-Bereich -->
+    <div id="login-container">
+        <h1>Passwort eingeben</h1>
+        <p>Bitte gib das Passwort ein, um die Seite zu sehen:</p>
+        <input type="password" id="password" placeholder="Passwort">
+        <button onclick="checkPassword()">Einloggen</button>
+        <p id="error-message" style="color: red; display: none;">Falsches Passwort!</p>
     </div>
+
+    <!-- Versteckter Inhalt -->
+    <div id="protected-content" class="hidden-content">
+        <h1>Ich hab auf dich gewartet</h1>
+        <p>Klick nicht auf das Video unten!</p>
+        <iframe src="https://www.instagram.com/reel/C69e_hDSYCC/embed" 
+                width="400" 
+                height="480" 
+                frameborder="0" 
+                scrolling="no" 
+                allowtransparency="true">
+        </iframe>
+        <div class="button-container">
+            <a href="https://www.instagram.com/reel/C-5yDFOS6H8/?igsh=cDY2YnA1bGRzeDEx" target="_blank" class="button">Hier klicken</a>
+        </div>
+    </div>
+
+    <script>
+        // Verschlüsseltes Passwort (SHA-256 Hash)
+        const hashedPassword = "5e884898da28047151d0e56f8dc6292773603d0d6aabbddf64c3f166a9b71c94";"
+
+        // Funktion zum Überprüfen des Passworts
+        async function checkPassword() {
+            const inputPassword = document.getElementById("password").value;
+            const hash = await sha256(inputPassword);
+
+            if (hash === hashedPassword) {
+                document.getElementById("login-container").style.display = "none";
+                document.getElementById("protected-content").style.display = "block";
+            } else {
+                document.getElementById("error-message").style.display = "block";
+            }
+        }
+
+        // Funktion: SHA-256 Hash erstellen
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+            return hashHex;
+        }
+    </script>
 </body>
 </html>
